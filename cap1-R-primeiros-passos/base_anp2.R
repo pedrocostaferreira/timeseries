@@ -5,11 +5,10 @@
 ############# Exercício: base_anp2.csv ####################################################################
 ###########################################################################################################
 
-
+# leitura dos dados
 anp<-read.csv2("dados_anp2.csv",stringsAsFactors = FALSE)
 str(anp)
 anp$PRECO_COMPRA<-as.numeric(anp$PRECO_COMPRA)
-
 anp[which(is.null(anp$PRECO_COMPRA)),]<-NA
 
 # 1) Faça o summary para entender a sua base:
@@ -21,35 +20,27 @@ summary(anp)
 nrow(anp)
 
 
-# 3) Crie uma tabela com a frequência de postos por combústivel, atribua essa tabela à variável “quantidade_postos”:
-
-quantidade_postos<-ddply(anp, .(COMBUSTIVEL), summarize,freq=length(COMBUSTIVEL))
-
-
-# 4) Qual combustível teve menos preços coletados? Isso faz sentido?
-
-# analise a tabela frequência
-
-# 5) Qual é o posto com menor preço de venda? É confiável essa fonte (dica: olhe para o fornecedor e a bandeira.)
+# 3) Qual é o posto com menor preço de venda?
 
 menor_preco<-min(anp$PRECO_VENDA)
 anp[which(anp$PRECO_VENDA==menor_preco),]
 
-# 6) Crie a tabela dados_etanol, que é um filtro do data frame anp. Sumarize dados_etanol por UF e média dos preços de venda do etanol
+
+# 4) Crie a tabela dados_etanol, que é um filtro do data frame anp.
 
 dados_etanol<-anp[which(anp$COMBUSTIVEL=="Etanol"),]
+dados_etanol
 
 
-quantidade_etanol<-ddply(dados_etanol, .(UF), summarize,PRECO=mean(PRECO_VENDA))
+# 5) Qual é o estado com a menor média de preços de venda do etanol.
+
+preco_pequeno<-min(dados_etanol$PRECO_VENDA)
+preco_pequeno
+
+dados_etanol[which(dados_etanol$PRECO_VENDA==preco_pequeno),"UF"]
 
 
-#7) Qual é o estado com a menor média de preços de venda do etanol. Isso faz sentido?
-
-preco_pequeno<-min(quantidade_etanol$PRECO)
-
-quantidade_etanol[which(quantidade_etanol$PRECO==preco_pequeno),"UF"]
-
-# 8) Exporte para o mesmo arquivo em excel os data frames
+# 6) Exporte para o mesmo arquivo em excel os data frames
 
 # Anp
 
@@ -57,5 +48,6 @@ write.xlsx(anp,"anp.xlsx",sheetName = "Anp", row.names = FALSE)
 
 #dados_etanol
 write.xlsx(dados_etanol,"anp.xlsx",sheetName = "Anp", row.names = FALSE,append = TRUE)
+
 
 
